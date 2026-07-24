@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Virtuális séta</title>
+
+<script src="lib/big.min.js"></script>
+<script src="lib/gl-matrix-min.js"></script>
+<script src="lib/jszip.min.js"></script>
+<script src="lib/core.min.js"></script>
+<script src="lib/geom.min.js"></script>
+<script src="lib/triangulator.min.js"></script>
+<script src="lib/viewmodel.min.js"></script>
+<script src="lib/viewhome.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<canvas id="viewerCanvas"></canvas>
+
+<div id="loading">
+
+    <progress id="viewerProgress" value="0" max="200"></progress>
+
+    <div id="viewerProgressLabel">
+        Betöltés...
+    </div>
+
+</div>
+
+<button id="fullscreenBtn" title="Teljes képernyő">
+    ⛶
+</button>
+
+<script>
+
+const homeUrl = "./models/Attila2.zip";
+
+function onError(err){
+
+    console.error(err);
+
+    alert(
+        err.message
+        ? err.constructor.name + ": " + err.message
+        : err
+    );
+
+}
+
+function onProgress(part, info, percentage){
+
+    const progress = document.getElementById("viewerProgress");
+
+    if(part === HomeRecorder.READING_HOME){
+
+        progress.value = percentage * 100;
+
+    }
+
+    if(part === Node3D.READING_MODEL){
+
+        progress.value = 100 + percentage * 100;
+
+        if(percentage === 1){
+
+            document.getElementById("loading").style.display = "none";
+
+        }
+
+    }
+
+    document.getElementById("viewerProgressLabel").innerHTML =
+        Math.floor(percentage * 100) + "%";
+
+}
+
+viewHome(
+    "viewerCanvas",
+    homeUrl,
+    onError,
+    onProgress,
+    {
+
+        roundsPerMinute : 0,
+
+        navigationPanel : "none"
+
+    }
+);
+
+</script>
+<script src="lib/myscripts.js"></script>
+
+</body>
+</html>
